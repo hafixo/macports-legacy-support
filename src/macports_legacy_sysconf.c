@@ -17,13 +17,9 @@
 /* MP support header */
 #include "MacportsLegacySupport.h"
 
-/* sysconf wrap, 10.4 */
-#if __MP_LEGACY_SUPPORT_SYSCONF_WRAP__
-
 /* we need this blocker so as to not get caught in our own wrap */
 #undef __DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__
 #define __DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ 1
-
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -35,6 +31,9 @@
 #include <MacportsLegacyWrappers/sysconf_support.h>
 
 long __MP_LEGACY_WRAPPER(sysconf)(int name){
+
+/* sysconf wrap */
+#if __MP_LEGACY_SUPPORT_SYSCONF_WRAP__
 
 #if __MP_LEGACY_SUPPORT_SYSCONF_WRAP_NEED_SC_NPROCESSORS_ONLN__
     if ( name == _SC_NPROCESSORS_ONLN ) {
@@ -88,9 +87,9 @@ long __MP_LEGACY_WRAPPER(sysconf)(int name){
     }
 #endif
 
+#endif /*__MP_LEGACY_SUPPORT_SYSCONF_WRAP__*/
+
     /* for any other values of "name", call the real sysconf() */
       return (long)sysconf(name);
 }
 
-
-#endif /*__MP_LEGACY_SUPPORT_SYSCONF_WRAP__*/
